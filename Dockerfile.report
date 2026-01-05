@@ -11,6 +11,3 @@ RUN java -version && allure --version
 WORKDIR /allure
 
 
-COPY displayreport.sh .
-
-CMD [ "./displayreport.sh" ]

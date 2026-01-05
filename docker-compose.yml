@@ -48,7 +48,8 @@ services:
         condition: service_completed_successfully
     volumes:
       - ${PROJECT_ROOT}/allure-report:/allure/allure-report
-    command: npx allure generate allure-results ---clean -o allure-report
+      - ${PROJECT_ROOT}/allure-results:/allure/allure-results
+    command: npx allure generate /allure/allure-results --clean -o /allure/allure-report
 
 volumes:
   mysql_data:
