@@ -10,7 +10,7 @@ RUN java -version && allure --version
 
 WORKDIR /allure
 
-COPY allure-results ./allure-results
+
 COPY displayreport.sh .
 
 CMD [ "./displayreport.sh" ]
