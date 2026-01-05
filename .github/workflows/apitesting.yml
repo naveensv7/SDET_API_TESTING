@@ -19,7 +19,7 @@ jobs:
           DB_USERNAME: ${{vars.DB_USERNAME}}
           DB_PORT: ${{vars.DB_PORT}}
         run: |
-          docker-compose up -d
+          docker compose up -d
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
