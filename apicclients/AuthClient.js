@@ -6,6 +6,7 @@ export class AuthClient {
   }
 
   async login(username, password) {
+    console.log("login");
     return await this.api.post("auth/login", {
       data: {
         username,
