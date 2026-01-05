@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  sql:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.tests
+    image: my-sc_01-img-01:v1
+    depends_on:
+      sql:
+        condition: service_healthy
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_PORT: ${DB_PORT}
+      PROJECT_ROOT: ${PROJECT_ROOT}
+
+    volumes:
+      - ${PROJECT_ROOT}/allure-results:/app/allure-results
+    command: npm run test
+
+  report:
+    build:
+      context: .
+      dockerfile: Dockerfile.report
+    container_name: my-report-cnt-compose-01
+    depends_on:
+      tests:
+        condition: service_completed_successfully
+    volumes:
+      - ${PROJECT_ROOT}/allure-report:/allure/allure-report
+    command: npx allure generate allure-results ---clean -o allure-report
+
+volumes:
+  mysql_data:

@@ -1,0 +1,26 @@
+name: "Api Testing"
+on:
+  pull_request:
+
+jobs:
+  APITESTS:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: RUN Docker cmompose
+        env:
+          PROJECT_ROOT: ${{github.workspace}}
+          DB_HOST: ${{vars.DB_HOST}}
+          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+          DB_DATABASE: ${{vars.DB_DATABASE}}
+          DB_USERNAME: ${{vars.DB_USERNAME}}
+          DB_PORT: ${{vars.DB_PORT}}
+        run: |
+          docker-compose up -d
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-test-results
+          path: allure-report
