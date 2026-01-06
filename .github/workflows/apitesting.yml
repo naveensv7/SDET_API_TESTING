@@ -20,7 +20,13 @@ jobs:
           DB_USERNAME: ${{vars.DB_USER}}
           DB_PORT: ${{vars.DB_PORT}}
         run: |
-          docker compose up --build -d
+          docker compose up --abort-on-container-exit --exit-code-from tests
+
+      - name: Debug Docker services
+        if: always()
+        run: |
+          docker compose ps
+          docker compose logs --no-color
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
