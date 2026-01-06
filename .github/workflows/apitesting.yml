@@ -17,7 +17,7 @@ jobs:
           DB_HOST: ${{vars.DB_HOST}}
           DB_PASSWORD: ${{secrets.DB_PASSWORD}}
           DB_DATABASE: ${{vars.DB_DATABASE}}
-          DB_USERNAME: ${{vars.DB_USER}}
+          DB_USER: ${{vars.DB_USER}}
           DB_PORT: ${{vars.DB_PORT}}
         run: |
           docker compose up --abort-on-container-exit --exit-code-from tests
