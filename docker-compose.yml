@@ -3,6 +3,7 @@ version: "3.9"
 services:
   sql:
     image: mysql:8
+    command: --default-authentication-plugin=caching_sha2_password
     container_name: mysql
     restart: always
     environment:
@@ -14,9 +15,31 @@ services:
       - mysql_data:/var/lib/mysql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -p$MYSQL_ROOT_PASSWORD || exit 1",
+        ]
       interval: 10s
-      retries: 5
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  # test:
+  #   image: node:18
+  #   depends_on:
+  #     sql:
+  #       condition: service_healthy
+  #   environment:
+  #     MYSQL_HOST: sql
+  #     MYSQL_USER: root
+  #     MYSQL_PASSWORD: ${DB_PASSWORD}
+  #   command: >
+  #     sh -c '
+  #     echo "Checking MySQL auth plugin..."
+  #     mysql -h "$MYSQL_HOST" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" \
+  #       -e "SELECT user, plugin FROM mysql.user;"
+  #     '
 
   tests:
     build:
