@@ -3,7 +3,6 @@ version: "3.9"
 services:
   sql:
     image: mysql:8
-
     container_name: mysql
     restart: always
     environment:
@@ -18,12 +17,12 @@ services:
       test:
         [
           "CMD-SHELL",
-          "mysqladmin ping -h localhost -p$MYSQL_ROOT_PASSWORD || exit 1",
+          "mysql -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD -e 'SELECT 1' || exit 1",
         ]
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 20s
+      start_period: 40s
 
   # test:
   #   image: node:18
