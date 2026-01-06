@@ -3,7 +3,7 @@ version: "3.9"
 services:
   sql:
     image: mysql:8
-    command: --default-authentication-plugin=caching_sha2_password
+
     container_name: mysql
     restart: always
     environment:
